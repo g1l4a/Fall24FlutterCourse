@@ -1,0 +1,49 @@
+on:
+  push:
+    branches:
+      - lab8
+  pull_request:
+    branches:
+      - lab8
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Flutter actions
+        uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Run Analyzer
+        run: flutter analyze lib/templates/lab8
+
+      - name: Run tests
+        run: flutter test test/widget_test_lab8.dart
+
+      - name: Build for web
+        if: github.ref == 'refs/heads/main'
+        run: flutter build web --tartget=lib/templates/lab8/main.dart
+
+  windows-build:
+      runs-on: windows-latest
+  
+      steps:
+        - uses: actions/checkout@v2
+  
+        - name: Set up Flutter actions
+          uses: subosito/flutter-action@v2
+          with:
+            channel: "stable"
+  
+        - name: Get dependencies
+          run: flutter pub get
+    
+        - name: Build Windows application
+          run: flutter build windows
